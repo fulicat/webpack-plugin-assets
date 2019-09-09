@@ -67,7 +67,7 @@
   (function(){var publicPath='/';var assets={"base":{"css":"dashboard/base.97d75ffe.css","js":"dashboard/base.97d75ffe.js"}};(function(assets){function loadResource(url, basePath, element, type){basePath = basePath || '';if (url) {this.url = url;if(url.indexOf('?') > 1){url = url.split('?')[0];}if(!type){type = url.endsWith('.js') ? 'script' : (url.endsWith('.css') ? 'link' : '');}element = document.createElement(type);if(type=='script'){element.charset = 'utf-8';element.src = basePath + this.url;}if(type=='link'){element.type = 'text/css';element.rel = 'stylesheet';element.href = basePath + this.url;}document.head.appendChild(element);}}Object.keys(assets).forEach(function(key){loadResource(assets[key].css, publicPath);loadResource(assets[key].js, publicPath);});})(assets);window.WebpackAssetsObject=assets;})();
 ```
 
-### b. assets.json
+### c. assets.json
 
 ```js
   {"base":{"css":"dashboard/base.db8a86d1.css","js":"dashboard/base.db8a86d1.js"}}

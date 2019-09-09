@@ -3,9 +3,9 @@
 * @Author: Jack.Chan (971546@qq.com)
 * @Date:   2019-09-07 13:00:03
 * @Last Modified by:   Jack.Chan
-* @Last Modified time: 2019-09-09 14:58:53
+* @Last Modified time: 2019-09-09 15:01:34
 * @website http://fulicat.com
-* @version v1.0.1
+* @version v1.0.2
 */
 
 const fs = require('fs');
