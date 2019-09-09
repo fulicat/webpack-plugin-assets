@@ -1,0 +1,31 @@
+{
+  "name": "webpack-plugin-assets",
+  "version": "1.0.0",
+  "description": "build assets for Webpack",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fulicat/webpack-plugin-assets.git"
+  },
+  "keywords": [
+    "webpack-plugin-assets",
+    "webpack.plugin.assets",
+    "webpack.assets",
+    "webpack assets",
+    "webpack",
+    "assets",
+    "vue"
+  ],
+  "author": "fulicat",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fulicat/webpack-plugin-assets/issues"
+  },
+  "homepage": "https://github.com/fulicat/webpack-plugin-assets#readme",
+  "devDependencies": {
+    
+  }
+}
