@@ -3,9 +3,9 @@
 * @Author: Jack.Chan (971546@qq.com)
 * @Date:   2019-09-07 13:00:03
 * @Last Modified by:   Jack.Chan
-* @Last Modified time: 2019-09-09 15:01:34
+* @Last Modified time: 2019-09-20 21:06:34
 * @website http://fulicat.com
-* @version v1.0.2
+* @version v1.0.3
 */
 
 const fs = require('fs');
@@ -61,6 +61,11 @@ const utils = {
 		}
 	},
 	copyDirSync: function(from, to) {
+		if (!this.isCopied) {
+			this.isCopied = true
+			this.form = path.resolve(from)
+			this.to = path.resolve(to)
+		}
 		form = path.resolve(from);
 		to = path.resolve(to);
 		if (this.isNeedClean) {
@@ -224,7 +229,7 @@ class WebpackPluginAssets {
 
 				process.on('exit', () => {
 					fs.writeFileSync(this.opts.file, this.opts.assetsContent);
-					console.log('\x1b[42m%s\x1b[0m%s\x1b[32m%s\x1b[0m', 'Webpack.Assets:', ' ', this.opts.fileFullName, '  ',`[${this.opts.release}]`,'\n');
+					console.log('\x1b[42m%s\x1b[0m%s\x1b[32m%s\x1b[0m', 'Webpack.Assets:', ' ', this.opts.fileFullName, '  ', `[${this.opts.release}]`, '\n');
 
 					if (typeof(this.opts.done)==='function') {
 						let config = {
@@ -233,6 +238,9 @@ class WebpackPluginAssets {
 						}
 						delete config.done;
 						this.opts.done.apply(process, [config, compiler]);
+					}
+					if (utils.isCopied) {
+						console.log('\x1b[42m%s\x1b[0m%s\x1b[32m%s\x1b[0m', 'Webpack.Assets copy to:', ' ', utils.to, '\n');
 					}
 				});
 				
