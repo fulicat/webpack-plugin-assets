@@ -2,6 +2,8 @@
 
 > build assets for Webpack.
 
+> version: 1.1.0
+
 ## Installation
 
 ### Node.js
@@ -19,12 +21,15 @@
 ```js
   config.plugins.push(
     new WebpackAssets({
-      fileName: 'assets.js', // assets.json
-      publicPath: '/',
+      // type: 'auto', // auto | array | object
+      // fileName: 'assets.js', // assets.js | assets.json
+      publicPath: '',
       assetsDir: '',
+      // template: false, // false | custom templateStr | '' (use default template)
       autoload: true, // with assets loader (only javascript file)
       done: conf => {
-        // conf.plugins.clean() // aways overwrite
+        // copy to other folder
+        // conf.plugins.clean() // isClear clear before |  aways overwrite
         // conf.plugins.copyDirSync('./dist', '../static/')
       }
     })
@@ -36,14 +41,34 @@
 ```js
     module.exports = {
       configureWebpack: config => {
+        /*
+        // if using external chunks
+        config.externals = {
+          'vue': 'Vue',
+          'vuex': 'Vuex',
+          'axios': 'axios'
+        }*/
+        
         config.plugins.push(
           new WebpackAssets({
-            fileName: 'assets.js', // assets.json
-            publicPath: '/',
+            // type: 'auto', // auto | array | object
+            // fileName: 'assets.js', // assets.js | assets.json
+            publicPath: '',
             assetsDir: '',
+            /*
+            // if using external chunks
+            queue: true, // queue loading
+            externals: [
+              '//cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js',
+              '//cdn.jsdelivr.net/npm/vuex@3.1.1/dist/vuex.min.js',
+              '//cdn.jsdelivr.net/npm/axios@0.19.0/dist/axios.min.js',
+              '>test.js' // > queue after
+            ],*/
+            // template: false, // false | custom templateStr | '' (use default template)
             autoload: true, // with assets loader (only javascript file)
             done: conf => {
-              // conf.plugins.clean() // aways overwrite
+              // copy to other folder
+              // conf.plugins.clean() // isClear clear before |  aways overwrite
               // conf.plugins.copyDirSync('./dist', '../static/')
             }
           })
@@ -58,19 +83,25 @@
 ### a. assets.js
 
 ```js
-  window.WebpackAssetsObject={"base":{"css":"dashboard/base.317cd762.css","js":"dashboard/base.317cd762.js"}};
+  window.WebpackAssetsObject={"base": ["base.cce6fad8.css", "base.cce6fad8.js"]};
 ```
 
-### b. assets.js (with assets loader)
+### b. assets.js (with assets loader) array
 
 ```js
-  (function(){var publicPath='/';var assets={"base":{"css":"dashboard/base.97d75ffe.css","js":"dashboard/base.97d75ffe.js"}};(function(assets){function loadResource(url, basePath, element, type){basePath = basePath || '';if (url) {this.url = url;if(url.indexOf('?') > 1){url = url.split('?')[0];}if(!type){type = url.endsWith('.js') ? 'script' : (url.endsWith('.css') ? 'link' : '');}element = document.createElement(type);if(type=='script'){element.charset = 'utf-8';element.src = basePath + this.url;}if(type=='link'){element.type = 'text/css';element.rel = 'stylesheet';element.href = basePath + this.url;}document.head.appendChild(element);}}Object.keys(assets).forEach(function(key){loadResource(assets[key].css, publicPath);loadResource(assets[key].js, publicPath);});})(assets);window.WebpackAssetsObject=assets;})();
+  (function(){var assets=["base.cce6fad8.css","base.cce6fad8.js"];var publicPath = '';(function(assets, publicPath, queue) {function typeOf(object) {return Object.prototype.toString.call(object).replace(/\[object (.*)\]/g, '$1').toLowerCase();}function loadResource(url, basePath, callback) {basePath = basePath || '';callback = (typeof(callback)==='function' ? callback : function(){});if (url) {if (url.startsWith('https://') || url.startsWith('http://') || url.startsWith('//')) {basePath = '';}this.url = url;if(url.indexOf('?') > 1){url = url.split('?')[0];}var type = url.endsWith('.js') ? 'script' : (url.endsWith('.css') ? 'link' : '');if (type) {var element = document.createElement(type);if(type=='script'){element.charset = 'utf-8';element.onerror = function(){console.error('Load failed: '+ url);};element.onload = element.onreadystatechange = function() {if (!this.readyState || this.readyState == 'complete') {callback();}};element.src = basePath + this.url;}if(type=='link'){element.type = 'text/css';element.rel = 'stylesheet';element.href = basePath + this.url;callback();}document.head.appendChild(element);}}}function parseObjectToArray(assets){let _assets = [];Object.keys(assets).forEach(function(chunk) {if (typeOf(assets[chunk]) === 'string') {_assets.push(assets[chunk]);} else if (typeOf(assets[chunk]) === 'array') {assets[chunk].forEach(function(_chunk) {_assets.push(_chunk);});} else if (typeOf(assets[key]) === 'object') {Object.keys(assets[chunk]).forEach(function(_chunk) {_assets.push(assets[chunk][_chunk]);});}});return _assets;}function loadResourceQueue(assets) {var url = assets[0];assets.splice(0, 1);if (url) {loadResource(url, publicPath, function() {loadResourceQueue(assets);});}}if (typeOf(assets) === 'object') {assets = parseObjectToArray(assets);}if (typeOf(assets) === 'array') {if (queue) {assets = JSON.parse(JSON.stringify(assets));loadResourceQueue(assets)} else {assets.forEach(function(chunk) {loadResource(chunk, publicPath);});}}})(assets, publicPath, false);})();
+```
+
+### b2. assets.js (with assets loader) object
+
+```js
+  (function(){var assets={"base": ["base.cce6fad8.css", "base.cce6fad8.js"]};var publicPath = '';(function(assets, publicPath, queue) {function typeOf(object) {return Object.prototype.toString.call(object).replace(/\[object (.*)\]/g, '$1').toLowerCase();}function loadResource(url, basePath, callback) {basePath = basePath || '';callback = (typeof(callback)==='function' ? callback : function(){});if (url) {if (url.startsWith('https://') || url.startsWith('http://') || url.startsWith('//')) {basePath = '';}this.url = url;if(url.indexOf('?') > 1){url = url.split('?')[0];}var type = url.endsWith('.js') ? 'script' : (url.endsWith('.css') ? 'link' : '');if (type) {var element = document.createElement(type);if(type=='script'){element.charset = 'utf-8';element.onerror = function(){console.error('Load failed: '+ url);};element.onload = element.onreadystatechange = function() {if (!this.readyState || this.readyState == 'complete') {callback();}};element.src = basePath + this.url;}if(type=='link'){element.type = 'text/css';element.rel = 'stylesheet';element.href = basePath + this.url;callback();}document.head.appendChild(element);}}}function parseObjectToArray(assets){let _assets = [];Object.keys(assets).forEach(function(chunk) {if (typeOf(assets[chunk]) === 'string') {_assets.push(assets[chunk]);} else if (typeOf(assets[chunk]) === 'array') {assets[chunk].forEach(function(_chunk) {_assets.push(_chunk);});} else if (typeOf(assets[key]) === 'object') {Object.keys(assets[chunk]).forEach(function(_chunk) {_assets.push(assets[chunk][_chunk]);});}});return _assets;}function loadResourceQueue(assets) {var url = assets[0];assets.splice(0, 1);if (url) {loadResource(url, publicPath, function() {loadResourceQueue(assets);});}}if (typeOf(assets) === 'object') {assets = parseObjectToArray(assets);}if (typeOf(assets) === 'array') {if (queue) {assets = JSON.parse(JSON.stringify(assets));loadResourceQueue(assets)} else {assets.forEach(function(chunk) {loadResource(chunk, publicPath);});}}})(assets, publicPath, false);})();
 ```
 
 ### c. assets.json
 
 ```js
-  {"base":{"css":"dashboard/base.db8a86d1.css","js":"dashboard/base.db8a86d1.js"}}
+  {"base": ["base.cce6fad8.css", "base.cce6fad8.js"]}
 ```
 
 
