@@ -3,9 +3,9 @@
 * @Author: Jack.Chan (971546@qq.com)
 * @Date:   2019-09-07 13:00:03
 * @Last Modified by:   Jack.Chan
-* @Last Modified time: 2019-09-26 00:27:15
+* @Last Modified time: 2019-09-27 13:54:31
 * @website http://fulicat.com
-* @version v1.1.0
+* @version v1.1.1
 */
 
 const fs = require('fs');
@@ -127,6 +127,17 @@ class WebpackPluginAssets {
 			template: false, // false | custom templateStr | '' (use default template)
 			templateRegExp: /({{assets}}|%assets%|{{data}}|%data%)/gi,
 			loader: function(assets, publicPath, queue) {
+				if (!String.prototype.startsWith) {
+					String.prototype.startsWith = function(searchString, position) {
+						position = position || 0;
+						return this.indexOf(searchString, position) === position;
+					}
+				}
+				if (!String.prototype.endsWith) {
+					String.prototype.endsWith = function(suffix) {
+						return this.indexOf(suffix, this.length - suffix.length) !== -1;
+					}
+				}
 				function typeOf(object) {
 					return Object.prototype.toString.call(object).replace(/\[object (.*)\]/g, '$1').toLowerCase();
 				}
@@ -401,8 +412,8 @@ class WebpackPluginAssets {
 						vars[key] = this.opts[key]
 					})
 					vars.assets = assetsData
-					templateContent = this.opts.template.replace(/{{(.*?)}}/g, function(match, key){
-						return vars[key.trim()]
+					templateContent = this.opts.template.replace(/\{\{([^\}]+)\}\}/g, function(match, key) {
+						return vars[key.trim()]!==undefined ? vars[key.trim()] : match;
 					})
 				}
 
