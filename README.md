@@ -2,7 +2,7 @@
 
 > build assets for Webpack.
 
-> version: 1.1.1
+> version: 1.1.3
 
 ## Installation
 
@@ -11,7 +11,7 @@
 `webpack-plugin-assets` is available on [npm](http://npmjs.org) or [yarn](https://yarnpkg.com).
 
     $ npm install webpack-plugin-assets --save-dev
-
+    
     $ yarn add webpack-plugin-assets --dev
 
 ## Usage

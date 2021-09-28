@@ -3,9 +3,9 @@
 * @Author: Jack.Chan (971546@qq.com)
 * @Date:   2019-09-07 13:00:03
 * @Last Modified by:   Jack.Chan
-* @Last Modified time: 2019-09-27 13:54:31
+* @Last Modified time: 2021-09-28 13:39:45
 * @website http://fulicat.com
-* @version v1.1.1
+* @version v1.1.3
 */
 
 const fs = require('fs');
@@ -179,7 +179,7 @@ class WebpackPluginAssets {
 					}
 				}
 				function parseObjectToArray(assets){
-					let _assets = [];
+					var _assets = [];
 					Object.keys(assets).forEach(function(chunk) {
 						if (typeOf(assets[chunk]) === 'string') {
 							_assets.push(assets[chunk]);
@@ -429,7 +429,7 @@ class WebpackPluginAssets {
 						this.opts.assetsLoader = compressLoaderCode ? `(${compressLoaderCode})(assets, publicPath, ${this.opts.queue});` : '';
 					}
 					if (this.opts.autoload) {
-						this.opts.assetsContent = `(function(){var assets=${assetsData};var publicPath = '${this.opts.publicPath}';${this.opts.assetsLoader}${templateContent}})();`;
+						this.opts.assetsContent = `(function(){var assets=${assetsData};var publicPath=(window.assetsBase||'')+'${this.opts.publicPath}';${this.opts.assetsLoader}${templateContent}})();`;
 					} else {
 						this.opts.assetsContent = templateContent
 					}
